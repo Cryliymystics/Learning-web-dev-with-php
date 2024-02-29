@@ -31,10 +31,10 @@ if ($stmt === false)
                 <?php echo htmlEscape($row['title']) ?>
             </h2>
             <div>
-                <?php echo htmlEscape($row['body']) ?>
+                <?php echo $row['created_at'] ?>
             </div>
             <p>
-                <?php echo htmlspecialchars($row['body'], ENT_HTML5, 'UTF-8') ?>
+                <?php echo htmlEscape($row['body']) ?>
             </p>
             <p>
                 <a
