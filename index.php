@@ -31,15 +31,17 @@ if ($stmt === false)
                 <?php echo htmlEscape($row['title']) ?>
             </h2>
             <div>
-                <?php echo $row['created_at'] ?>
+                <?php echo convertSqlDate($row['created_at']) ?>
+
+                (<?php echo countCommentsForPost($row['id']) ?> comments)
             </div>
             <p>
                 <?php echo htmlEscape($row['body']) ?>
             </p>
             <p>
                 <a
-                        href="view-post.php?post_id=<?php echo $row['id'] ?>"
-                    >Read more...</a>
+                    href="view_post.php?post_id=<?php echo $row['id'] ?>"
+                >Read more...</a>
             </p>
         <?php endwhile ?>
 
