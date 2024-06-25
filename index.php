@@ -48,7 +48,7 @@ $notFound = isset($_GET['not-found']);
             </p>
             <p>
                 <a
-                    href="view_post.php?post_id=<?php echo $row['id'] ?>"
+                    href="view-post.php?post_id=<?php echo $row['id'] ?>"
                 >Read more...</a>
             </p>
         <?php endwhile ?>
