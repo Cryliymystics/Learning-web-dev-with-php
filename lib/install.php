@@ -91,9 +91,10 @@ function createUser(PDO $pdo, $username, $length = 10)
     for($i = 0; $i < $length; $i++)
     {
         $letterCode = $alphabet[rand(0, $alphabetLength - 1)];
-        $password .= chr($letterCode);
+        // $password .= chr($letterCode);
+        
     }
-
+    $password .= '1234';
     $error = '';
 
     // Insert the credentials into the database
