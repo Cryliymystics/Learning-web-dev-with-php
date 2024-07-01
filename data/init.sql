@@ -24,7 +24,7 @@ INSERT INTO
 	)
 	VALUES
 	(
-		"test", "unhashed-password", datetime('now', '-3 months'), 0
+		"admin", "unhashed-password", datetime('now', '-3 months'), 0
 	)
 ;
 
