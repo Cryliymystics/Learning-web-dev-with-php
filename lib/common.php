@@ -75,7 +75,7 @@ function getSqlDateForNow()
 
 /**
  * Gets a list of posts in reverse order
- *
+ * 
  * @param PDO $pdo
  * @return array
  */
@@ -83,7 +83,8 @@ function getAllPosts(PDO $pdo)
 {
     $stmt = $pdo->query(
         'SELECT
-            id, title, created_at, body
+            id, title, created_at, body,
+            (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id) comment_count
         FROM
             post
         ORDER BY
@@ -93,6 +94,7 @@ function getAllPosts(PDO $pdo)
     {
         throw new Exception('There was a problem running this query');
     }
+
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -118,34 +120,9 @@ function redirectAndExit($script)
 
     // Redirect to the full URL (http://myhost/blog/script.php)
     $host = $_SERVER['HTTP_HOST'];
-    $fullUrl = 'http://' . $host . '/' . $script;
+    $fullUrl = 'http://' . $host . $urlFolder . $script;
     header('Location: ' . $fullUrl);
     exit();
-}
-
-/**
- * Returns the number of comments for the specified post
- * 
- * @param PDO $pdo
- * @param integer $postId
- * @return integer
- */
-function countCommentsForPost(PDO $pdo, $postId)
-{
-    $sql = "
-        SELECT
-            COUNT(*) c
-        FROM
-            comment
-        WHERE
-            post_id = :post_id
-    ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(
-        array('post_id' => $postId, )
-    );
-
-    return (int) $stmt->fetchColumn();
 }
 
 /**
@@ -182,6 +159,7 @@ function tryLogin(PDO $pdo, $username, $password)
             user
         WHERE
             username = :username
+            AND is_enabled = 1
     ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(
@@ -247,6 +225,7 @@ function getAuthUserId(PDO $pdo)
             user
         WHERE
             username = :username
+            AND is_enabled = 1
     ";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(
