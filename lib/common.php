@@ -37,7 +37,16 @@ function getDsn()
  */
 function getPDO()
 {
-    return new PDO(getDsn());
+    $pdo = new PDO(getDsn());
+
+    // Foreign key constraints need to be enabled manually in SQLite
+    $result = $pdo->query('PRAGMA foreign_keys = ON');
+    if ($result === false)
+    {
+        throw new Exception('Could not turn on foreign key constraints');
+    }
+
+    return $pdo;
 }
 
 /**
@@ -159,7 +168,6 @@ function tryLogin(PDO $pdo, $username, $password)
     // Get the hash from this row, and use the third-party hashing library to check it
     $hash = $stmt->fetchColumn();
     $success = password_verify($password, $hash);
-    echo $hash;
 
     return $success;
 }
@@ -196,4 +204,33 @@ function getAuthUser()
 function isLoggedIn()
 {
     return isset($_SESSION['logged_in_username']);
+}
+
+/**
+ * Looks up the user_id for the current auth user
+ */
+function getAuthUserId(PDO $pdo)
+{
+    // Reply with null if there is no logged-in user
+    if (!isLoggedIn())
+    {
+        return null;
+    }
+
+    $sql = "
+        SELECT
+            id
+        FROM
+            user
+        WHERE
+            username = :username
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(
+        array(
+            'username' => getAuthUser()
+        )
+    );
+
+    return $stmt->fetchColumn();
 }
